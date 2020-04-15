@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.7
 # -*- coding:utf-8 -*-
 
 import os
@@ -6,7 +6,7 @@ import configparser
 import psycopg2
 
 
-def post_conn():
+def __post_conn():
     cfg_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), "../..")), 'service.cfg')
     print(cfg_path)
 
@@ -18,30 +18,47 @@ def post_conn():
     db_pass = postgre_cfg.get('PostgreSQL', 'DB_Pass')
     db_host = postgre_cfg.get('PostgreSQL', 'DB_Host')
     db_port = postgre_cfg.get('PostgreSQL', 'DB_Port')
-    return psycopg2.connect(database=db_name, user=db_user, password=db_pass, host=db_host, port=db_port)
+    db_conn = psycopg2.connect(database=db_name, user=db_user, password=db_pass, host=db_host, port=db_port)
+    if db_conn is None:
+        raise Exception('数据库连接失败')
+    return db_conn
+
+
+def __run(sql):
+    try:
+
+        if sql is None or str.strip(sql) == '':
+            raise Exception('查询语句为空')
+        db_conn = __post_conn()
+        db_cursor = db_conn.cursor()
+        db_cursor.execute(sql)
+    except Exception as e:
+        print(e)
+    finally:
+        db_conn.close()
 
 
 def __select(sql, type):
-    if sql is None or str.strip(sql) == '':
-        raise Exception('查询语句为空')
-    db_conn = post_conn()
     try:
-        if db_conn is None:
-            raise Exception('数据库连接失败')
+        if sql is None or str.strip(sql) == '':
+            raise Exception('查询语句为空')
+        db_conn = __post_conn()
         db_cursor = db_conn.cursor()
-        db_cursor.excute(sql)
+        db_cursor.execute(sql)
         if type == 0:
             row = db_cursor.fecthone()
             if row is None:
                 raise Exception('查询结果为空')
             return row
         elif type == 1:
-            rows = db_cursor.fecthall()
+            rows = db_cursor.fetchall()
             if rows is None:
                 raise Exception('查询结果为空')
             return rows
         else:
             raise Exception('')
+    except Exception as e:
+        print(e)
     finally:
         db_conn.close()
 
@@ -62,6 +79,7 @@ def post_select_all(sql):
 
 if __name__ == '__main__':
     try:
-        print('1')
+        sql = 'select * from poi'
+        __select(sql,1)
     except Exception as e:
         print(e)
