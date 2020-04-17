@@ -6,6 +6,14 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 
 
+def shp2db(shp_path):
+    try:
+        print('Complate')
+    except Exception as e:
+        print(e)
+
+
+# 将网上下载的行政区信息导入数据库
 def xls2db(xls_path):
     try:
         workbook = load_workbook(xls_path)
