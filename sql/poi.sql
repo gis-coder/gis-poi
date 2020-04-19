@@ -67,4 +67,11 @@ alter table tb_region add primary key (f_gid);
 
 -- 表名、字段名、投影（wkid）、类型、
 -- 此处的false解决了在MULTIPOLYGON类型的字段中无法插入POLYGON类型的数据
-select addgeometrycolumn('tb_region', 'geom', '4326', 'MULTIPOLYGON', 2, false);
+select addgeometrycolumn('tb_region', 'f_geom', '4326', 'MULTIPOLYGON', 2, false);
+
+-- 删除原有的
+ALTER TABLE tb_region DROP CONSTRAINT enforce_geotype_f_geom;
+
+ALTER TABLE tb_region
+  ADD CONSTRAINT enforce_geotype_f_geom
+  CHECK ((geometrytype(f_geom) = ANY (ARRAY['MULTIPOLYGON'::text, 'POLYGON'::text])) OR f_geom IS NULL);

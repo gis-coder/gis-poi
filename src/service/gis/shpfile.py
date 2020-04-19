@@ -4,6 +4,7 @@
 
 from osgeo import gdal
 from osgeo import ogr
+import osr
 
 # 矢量文件支持中文
 gdal.SetConfigOption('GDAL_FILENAME_IS_UTF8', 'YES')
@@ -22,6 +23,8 @@ class ShapeRead():
         self.path = path
         # 矢量文件空间信息
         self.spatial = None
+
+        self.wkid = None
         # 矢量文件类型
         self.geoType = None
         # 矢量文件字段数量
@@ -42,9 +45,9 @@ class ShapeRead():
     # 读取矢量文件定义
     def __getShpInfo(self):
         try:
-            self.__getObject()
+            self.__get_Object()
 
-            self.spatial = self.__layer.GetSpatialRef()
+            self.__read_spatial()
 
             # 读取矢量文件空间信息
             self.__definition = self.__layer.GetLayerDefn()
@@ -68,7 +71,8 @@ class ShapeRead():
         finally:
             self.__close()
 
-    def __getObject(self):
+    # 初始化对象
+    def __get_Object(self):
         try:
             # 读取矢量空间信息驱动
             self.__driver = ogr.GetDriverByName("ESRI Shapefile")
@@ -90,10 +94,23 @@ class ShapeRead():
         except Exception as e:
             print(e)
 
+    def __read_spatial(self):
+        try:
+            spatialRef = self.__layer.GetSpatialRef()
+            self.spatial = spatialRef.ExportToWkt()
+            if self.spatial is None:
+                return
+            else:
+                sr = osr.SpatialReference()
+                sr.ImportFromWkt(self.spatial)
+                # self.wkid = sr.ExportToEPSG()
+        except Exception as e:
+            print(e)
+
     # 读取矢量文件字段信息
     def read_field(self):
         try:
-            self.__getObject();
+            self.__get_Object()
 
             # 读取矢量文件空间信息
             self.__definition = self.__layer.GetLayerDefn()
@@ -124,7 +141,7 @@ class ShapeRead():
     # 读取矢量文件所有坐标信息
     def read_geo(self):
         try:
-            self.__getObject()
+            self.__get_Object()
             feature = self.__layer.GetNextFeature()
             wkbList = []
             while feature is not None:
@@ -139,7 +156,7 @@ class ShapeRead():
     # 读取矢量文件属性表
     def read_attr(self):
         try:
-            self.__getObject()
+            self.__get_Object()
             attrs = []
             feature = self.__layer.GetNextFeature()
             while feature is not None:
@@ -157,7 +174,7 @@ class ShapeRead():
 
     def read_values(self):
         try:
-            self.__getObject()
+            self.__get_Object()
             feature = self.__layer.GetNextFeature()
             values = []
             while feature is not None:
