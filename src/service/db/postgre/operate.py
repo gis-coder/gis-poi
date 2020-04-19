@@ -7,24 +7,22 @@ import psycopg2
 
 
 def __post_conn():
-    cfg_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), "../..")), 'service.cfg')
-    print(cfg_path)
-
+    cfg_path = os.path.join(os.path.abspath(os.path.join(os.getcwd(), "..")), 'service.cfg')
     postgre_cfg = configparser.ConfigParser()
     postgre_cfg.read(cfg_path)
 
-    db_name = postgre_cfg.get('PostgreSQL', 'DB_Name')
-    db_user = postgre_cfg.get('PostgreSQL', 'DB_User')
-    db_pass = postgre_cfg.get('PostgreSQL', 'DB_Pass')
-    db_host = postgre_cfg.get('PostgreSQL', 'DB_Host')
-    db_port = postgre_cfg.get('PostgreSQL', 'DB_Port')
+    db_name = postgre_cfg.get('PostGIS', 'DB_Name')
+    db_user = postgre_cfg.get('PostGIS', 'DB_User')
+    db_pass = postgre_cfg.get('PostGIS', 'DB_Pass')
+    db_host = postgre_cfg.get('PostGIS', 'DB_Host')
+    db_port = postgre_cfg.get('PostGIS', 'DB_Port')
     db_conn = psycopg2.connect(database=db_name, user=db_user, password=db_pass, host=db_host, port=db_port)
     if db_conn is None:
         raise Exception('数据库连接失败')
     return db_conn
 
 
-def __run(sql):
+def run(sql):
     try:
 
         if sql is None or str.strip(sql) == '':

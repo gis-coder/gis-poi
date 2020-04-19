@@ -65,4 +65,6 @@ COMMENT ON COLUMN "public"."tb_region"."f_south" IS '南';
 
 alter table tb_region add primary key (f_gid);
 
-select addgeometrycolumn('','tb_region', 'geom', '4326', 'MULTIPOLYGON', 2);
+-- 表名、字段名、投影（wkid）、类型、
+-- 此处的false解决了在MULTIPOLYGON类型的字段中无法插入POLYGON类型的数据
+select addgeometrycolumn('tb_region', 'geom', '4326', 'MULTIPOLYGON', 2, false);

@@ -4,11 +4,23 @@
 import osgeo
 from openpyxl import load_workbook
 from openpyxl import Workbook
+import gis.shpfile
+import db.postgre.operate as postdb
 
 
 def shp2db(shp_path):
     try:
-        print('Complate')
+        shp = gis.shpfile.ShapeRead(shp_path)
+        # print(shp.geoType)
+        # print(shp.spatial)
+        # fields = shp.read_field()
+        # print(fields)
+        attrs = shp.read_values()
+        if attrs is None:
+            raise Exception('读取属性表失败')
+        for row in attrs:
+            sql = "update tb_region set geom = ST_GeomFromText('{0}',4326) where f_code = '{1}';".format(row[3], row[1])
+            postdb.run(sql)
     except Exception as e:
         print(e)
 
@@ -40,7 +52,8 @@ if __name__ == '__main__':
     try:
         shp_path = r'D:\Code\gis-poi\data\region\polygon'
         xls_path = r'D:\Code\gis-poi\data\region\region.xlsx'
-        xls2db(xls_path)
+        # xls2db(xls_path)
+        shp2db(shp_path + '\province.shp')
         print('Complate')
     except Exception as e:
         print(e)
