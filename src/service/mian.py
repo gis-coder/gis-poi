@@ -20,6 +20,5 @@ if __name__ == '__main__':
         db_port = cfg.get('poi_service', 'S_Port')
         db_debug = cfg.get('poi_service', 'S_Debug')
         app.run(host=db_host, port=db_port, debug=db_debug)
-        # app.run(debug=True)
     except Exception as e:
         print(e)
