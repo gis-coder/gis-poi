@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}地理信息系统{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/leaflet/leaflet.css') }}"/>
+<link rel="stylesheet" href="{{ url_for('static',filename='css/leaflet/easy-button.css') }}"/>
+<script src="{{ url_for('static',filename='js/leaflet/leaflet.js') }}"></script>
+<script src="{{ url_for('static',filename='js/leaflet/easy-button.js') }}"></script>
+<style type="text/css">
+    /* leaflet全屏处理 */
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    .left-list {
+      width: 15%;
+      height: 100%;
+    }
+
+    .map-container {
+      width: 80%;
+      height: 92%;
+      padding: 0;
+      margin: 0;
+
+    }
+
+
+
+
+</style>
+{% endblock %}
+
+{% block body %}
+<!-- <div class="left-list" id="left-list">
+    <li>
+      <a>aa</a>
+    </li>
+    <li>
+      <a>aa</a>
+    </li>
+    <li>
+      <a>aa</a>
+    </li>
+  </div> -->
+<div class="map-container" id="mapDiv">
+</div>
+
+<script>
+      //初始化 地图容器
+      var attr = '地图服务来源是OpenStreetMap，示例仅用于展示和个人使用。';
+      var corner1 = L.latLng(-90, -180); // 地图左下角
+      var corner2 = L.latLng(90, 180); // 地图右上角
+      var bounds = L.latLngBounds(corner1, corner2); // 根据2个经纬度来确定一个矩形
+
+      var leafletMap = L.map('mapDiv', {
+        //zoomControl:false,//默认是否显示缩放控件
+        maxZoom: 18,
+        minZoom: 2,
+        crs: L.CRS.EPSG3857,
+        maxBounds: bounds
+      }).setView([0, 0], 2);
+
+      //设置地图容器的最大显示范围
+      leafletMap.setMaxBounds(bounds);
+
+      //添加一个切片地图服务
+      var url =
+        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+      L.tileLayer(url, {
+        attribution: attr
+      }).addTo(leafletMap);
+
+      // 设置默认缩放控件的位置
+      leafletMap.zoomControl.setPosition('topright');
+      // 添加缩放控件至地图中
+      //L.control.zoom({zoomInTitle:'放大',zoomOutTitle:'缩小',position:'topright'}).addTo(leafletMap);
+      // 添加地图比例尺
+      L.control.scale({
+        maxWidth: 200,
+        metric: true,
+        imperial: false
+      }).addTo(leafletMap);
+
+      // var zoomTo = L.map('zoomto', {
+      //   scrollWheelZoom: false
+      // }).setView([37.8, -96], 4);
+      // L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
+
+      // 在leaflet中添加自定义按钮使用插件easybutton
+      L.easyButton('<img src="{{ url_for('static',filename='img/position.png') }}">', function () {
+        leafletMap.setView([33, 106], 4);
+      }).addTo(leafletMap);
+
+      // easybutton示例
+      // var stateChangingButton = L.easyButton({
+      //   states: [{
+      //     stateName: 'zoom-to-forest', // name the state
+      //     icon: 'fa-tree', // and define its properties
+      //     title: 'zoom to a forest', // like its title
+      //     onClick: function (btn, map) { // and its callback
+      //       map.setView([46.25, -121.8], 10);
+      //       btn.state('zoom-to-school'); // change state on click!
+      //     }
+      //   }, {
+      //     stateName: 'zoom-to-school',
+      //     icon: 'fa-university',
+      //     title: 'zoom to a school',
+      //     onClick: function (btn, map) {
+      //       map.setView([42.3748204, -71.1161913], 16);
+      //       btn.state('zoom-to-forest');
+      //     }
+      //   }]
+      // });
+
+      // stateChangingButton.addTo(leafletMap);
+
+
+      //增加一个marker ，地图上的标记，并绑定了一个popup，默认打开
+      // L.marker([41, 123]).addTo(leafletMap)
+      //   .bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+
+      //增加一个圈，设置圆心、半径、样式
+      // L.circle([41, 123], 500, {
+      //   color: 'red',
+      //   fillColor: '#f03',
+      //   fillOpacity: 0.5
+      // }).addTo(leafletMap).bindPopup("I am a circle.");
+
+      //增加多边形
+      // L.polygon([
+      //   [41, 123],
+      //   [39, 121],
+      //   [41, 126]
+      // ]).addTo(leafletMap).bindPopup("I am a polygon.");
+
+      //为点击地图的事件 增加popup
+      // var popup = L.popup();
+
+      // function onMapClick(e) {
+      //   popup
+      //     .setLatLng(e.latlng)
+      //     .setContent("You clicked the map at " + e.latlng.toString())
+      //     .openOn(leafletMap);
+      // }
+      // leafletMap.on('click', onMapClick);
+
+
+
+
+</script>
+{% endblock %}
