@@ -41,22 +41,43 @@ def hello_world():
     session['username'] = 'rex'
     # 在不设置session的存活时间时，默认是一个月
     session.permanent = True
-    return 'Hello World!'
+    # return 'Hello World!'
+    return render_template('main.html')
 
 
-@app.route('/get/')
-def get():
-    return session.get('username')
+@app.route('/user_login/', methods=['GET', 'POST'])
+def user_login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    else:
+        render_template('index.html')
 
 
-@app.before_request
-def my_before_request():
-    pass
+@app.route('/user_regist/', methods=['GET', 'POST'])
+def user_regist():
+    if request.method == 'GET':
+        return render_template('regist.html')
+    else:
+        pass
 
 
-@app.context_processor
-def my_context_processor():
-    pass
+@app.route('/user_pass/', methods=['GET', 'POST'])
+def user_pass():
+    if request.method == 'GET':
+        return 'get pass'
+    else:
+        pass
+
+
+#
+# @app.before_request
+# def my_before_request():
+#     pass
+#
+#
+# @app.context_processor
+# def my_context_processor():
+#     pass
 
 
 if __name__ == '__main__':
