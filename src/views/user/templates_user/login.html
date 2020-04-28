@@ -26,6 +26,8 @@ background-color: transparent;
 }
 
 
+
+
 </style>
 {% endblock %}
 
@@ -52,10 +54,10 @@ background-color: transparent;
         </div>
         <div class="row form group">
             <div class="col-sm-6">
-                <a href="{{ url_for('user_pass') }}">忘记密码</a>
+                <a href="{{ url_for('user.getpass') }}">忘记密码</a>
             </div>
             <div class="col-sm-6 text-right">
-                <a href="{{ url_for('user_regist') }}">注册</a>
+                <a href="{{ url_for('user.regist') }}">注册</a>
             </div>
         </div>
     </form>
