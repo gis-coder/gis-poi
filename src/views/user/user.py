@@ -4,6 +4,7 @@
 
 from views.user import user_blue
 from flask import request, render_template
+import models.user_model
 
 
 @user_blue.route('/login/', methods=["GET", "POST"])

@@ -8,6 +8,7 @@ from flask_restful import Api
 import config
 import models
 from postdb import postdb
+from flask_sqlalchemy import SQLAlchemy
 from views.user import user_blue
 
 app = Flask(__name__)
@@ -22,15 +23,8 @@ api = Api(app)
 
 app.register_blueprint(user_blue)
 
-# db = SQLAlchemy(app)
+db = SQLAlchemy(app)
 # engine = create_engine('postgresql://rex:123456@127.0.0.1:5432/gis_poi', echo=True)
-
-
-# class Region(db.Model):
-#     __tablename__ = 'tb_region1'
-#     f_id = Column(Integer, primary_key=True)
-#     f_name = Column(String)
-#     f_geom = Column(Geometry('POLYGON', 4326))
 
 
 # @app.route('/')
