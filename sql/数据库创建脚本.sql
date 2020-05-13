@@ -75,3 +75,22 @@ ALTER TABLE tb_region DROP CONSTRAINT enforce_geotype_f_geom;
 ALTER TABLE tb_region
   ADD CONSTRAINT enforce_geotype_f_geom
   CHECK ((geometrytype(f_geom) = ANY (ARRAY['MULTIPOLYGON'::text, 'POLYGON'::text])) OR f_geom IS NULL);
+
+-- 用户表
+create table tb_user
+(
+	f_id varchar(50) PRIMARY KEY,
+	f_name varchar(50) not null,
+	f_pass varchar(20) not null
+);
+
+-- 用户信息表
+create table tb_user_info
+(
+	f_uid varchar(50),
+	f_tel varchar(50),
+	f_email varchar(50),
+	f_address varchar(100)
+);
+-- 将用户表的主键设置为用户信息表的外键
+alter table tb_user_info add FOREIGN key(f_uid) REFERENCES tb_user(f_id) on update CASCADE on DELETE CASCADE;
