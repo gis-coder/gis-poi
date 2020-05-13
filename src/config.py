@@ -3,17 +3,24 @@
 
 import os
 
+# 服务器配置信息
+HOSTNAME = '127.0.0.1'
+PORT = '8888'
+SERVER_NAME = '{}:{}'.format(HOSTNAME, PORT)
 DEBUG = True
+# 如果使用cookie必须设置SECRET_KEY
 SECRET_KEY = os.urandom(24)
 
-# DIALECT = 'postgresql'
-# DRIVER = 'psycopg2'
-# HOSTNAME = '127.0.0.1'
-# PORT = '5432'
-# DATABASE = 'gis_poi'
-# USERNAME = 'rex'
-# PASSWORD = '123456'
-# MySql连接字符串
-DB_URI = '{}+{}://{}:{}@{}:{}/{}'.format('postgresql', 'psycopg2', 'rex', '123456', '127.0.0.1', '5432', 'gis_poi')
-SQLALCHEMY_DATABASE_URI = DB_URI
+# 数据库配置信息
+DB_DIALECT = 'postgresql'
+DB_DRIVER = 'psycopg2'
+DB_HOSTNAME = '127.0.0.1'
+DB_PORT = '5432'
+DB_DATABASE = 'poi'
+DB_USERNAME = 'rex'
+DB_PASSWORD = '123456'
+# 数据库连接字符串
+SQLALCHEMY_DATABASE_URI = '{}+{}://{}:{}@{}:{}/{}'.format(DB_DIALECT, DB_DRIVER, DB_USERNAME, DB_PASSWORD, DB_HOSTNAME,
+                                                          DB_PORT,
+                                                          DB_DATABASE)
 SQLALCHEMY_TRACK_MODIFICATIONS = True

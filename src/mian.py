@@ -7,8 +7,13 @@ from flask_restful import Api
 from flask_cors import *
 import configparser
 from views.user import user_blue
+from dbAlchemy import postdb
+import config
 
 app = Flask(__name__)
+app.config.from_object(config)
+# 需要在此处初始化数据库连接
+postdb.init_app(app)
 # 解决跨域问题
 CORS(app, resource=r'/')
 api = Api(app)
@@ -26,12 +31,6 @@ app.register_blueprint(user_blue)
 
 if __name__ == '__main__':
     try:
-        cfg = configparser.ConfigParser()
-        cfg.read('service.cfg')
-
-        db_host = cfg.get('poi_service', 'S_Host')
-        db_port = cfg.get('poi_service', 'S_Port')
-        db_debug = cfg.get('poi_service', 'S_Debug')
-        app.run(host=db_host, port=db_port, debug=db_debug)
+        app.run()
     except Exception as e:
         print(e)

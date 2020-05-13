@@ -7,7 +7,7 @@ from datetime import timedelta
 from flask_restful import Api
 import config
 import models
-from postdb import postdb
+from dbAlchemy import postdb
 from flask_sqlalchemy import SQLAlchemy
 from views.user import user_blue
 

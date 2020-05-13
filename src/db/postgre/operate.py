@@ -7,17 +7,7 @@ import psycopg2
 
 
 def __post_conn():
-    cfg_path = os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), 'service.cfg')
-
-    postgre_cfg = configparser.ConfigParser()
-    postgre_cfg.read(cfg_path)
-
-    db_name = postgre_cfg.get('PostGIS', 'DB_Name')
-    db_user = postgre_cfg.get('PostGIS', 'DB_User')
-    db_pass = postgre_cfg.get('PostGIS', 'DB_Pass')
-    db_host = postgre_cfg.get('PostGIS', 'DB_Host')
-    db_port = postgre_cfg.get('PostGIS', 'DB_Port')
-    db_conn = psycopg2.connect(database=db_name, user=db_user, password=db_pass, host=db_host, port=db_port)
+    db_conn = psycopg2.connect(database='poi', user='rex', password='123456', host='127.0.0.1', port='5432')
     if db_conn is None:
         raise Exception('数据库连接失败')
     return db_conn
