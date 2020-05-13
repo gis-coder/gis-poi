@@ -37,10 +37,10 @@
         <button class="btn btn-info" type="submit">搜索</button>
     </form>
     <ul class="navbar-nav justify-content-end">
+        {% if user %}
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="{{ url_for('user.login') }}" id="navbardrop"
-               data-toggle="dropdown">
-                登录
+            <a class="nav-link dropdown-toggle"  id="navbardrop" data-toggle="dropdown">
+                {{ user['username']|default('登录') }}
             </a>
             <div class="dropdown-menu" style="min-width: 80px;">
                 <a class="dropdown-item" href="#">历史</a>
@@ -49,6 +49,11 @@
                 <a class="dropdown-item" href="#">退出</a>
             </div>
         </li>
+        {% else %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('user.login') }}">登录</a>
+        </li>
+        {% endif %}
     </ul>
 </nav>
 {% block body %}{% endblock %}

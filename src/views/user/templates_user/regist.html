@@ -31,207 +31,53 @@
     margin: auto;
 }
 
+
 </style>
 {% endblock %}
 
 {% block body %}
 <div class="container regist">
     <h2 class="text-center" style="margin-bottom: 15px">注册</h2>
-    <form id="registerForm" name="registerForm" class="form-horizontal" method="post" onsubmit="return false">
+    <form id="registerForm" name="registerForm" class="form-horizontal" method="post" action="">
         <div class="row form-group">
             <label for="username">用户名</label>
-            <input type="text" id="username" class="form-control">
-            <div class="invalid-feedback" id="name_help"></div>
+            <input type="text" name="username" class="form-control" value="{{username|default('')}}">
+            <p style="color:red">{{name_error|default('')}}</p>
         </div>
         <div class="row form-group">
             <label for="pass">密码</label>
-            <input type="password" id="pass" class="form-control">
-            <div class="invalid-feedback" id="pass_help"></div>
+            <input type="password" name="pass" class="form-control" value="{{password|default('')}}">
+            <p style="color:red">{{pass_error|default('')}}</p>
         </div>
         <div class="row form-group">
             <label for="repass">确认密码</label>
-            <input type="password" id="repass" class="form-control">
-            <div class="invalid-feedback" id="repass_help"></div>
+            <input type="password" name="repass" class="form-control" value="{{repassword|default('')}}">
+            <p style="color:red">{{repass_error|default('')}}</p>
         </div>
         <div class="row form-group">
             <label for="inputCheck">验证码</label>
             <div class="row">
                 <div class="col-sm-7">
-                    <input type="text" id="inputCheck" class="form-control">
-                    <div class="invalid-feedback" id="check_help"></div>
+                    <input type="text" name="captcha" class="form-control">
                 </div>
                 <div class="col-sm-4 col-sm-offset-7">
-                    <canvas id="canvas" width="100px" height="40px"></canvas>
+                    <img id="captchaImg" width="100px" height="40px" src="{{ url_for('user.captcha') }}"></img>
                 </div>
                 <div class="col-sm-1 col-sm-offset-11">
-                    <input type="button" id="changeImg" class="btn-circle"/>
+                    <input type="button" id="changeImg" class="btn-circle" onclick="Change()"/>
                 </div>
             </div>
+            <p style="color:red">{{captcha_error|default('')}}</p>
         </div>
         <div class="row form-group">
-            <input type="submit" class="btn btn-primary btn-block btn-lg" onclick="checkForm()" value="注册"/>
+            <input type="submit" class="btn btn-primary btn-block btn-lg" value="注册"/>
         </div>
     </form>
 </div>
 <script type="text/javascript">
-        function checkForm() {
-
-            //用户名验证
-            var name = document.getElementById('username');
-            var name_help = document.getElementById("name_help");
-            if (name.value.search(/^[a-zA-Z]([a-zA-Z0-9_]{5,20})$/) == -1) {
-                name_help.innerHTML = "用户名是由字母、数字和下划线组成，长度为6-21个字符且首字母只能是字母";
-                name.classList.remove("is-valid");
-                name.classList.add("is-invalid");
-                return false;
-            } else {
-                name_help.innerHTML = "";
-                name.classList.remove("is-invalid");
-                name.classList.add("is-valid");
-            }
-
-            //用户密码
-            var pass = document.getElementById('pass');
-            var pass_help = document.getElementById("pass_help");
-            if (pass.value.search(/^[a-zA-Z0-9_]{6,12}$/) == -1) {
-                pass_help.innerHTML = "用户密码必须是数字、字母和下划线组成的6-12位长度的字符";
-                pass.classList.remove("is-valid");
-                pass.classList.add("is-invalid");
-                return false;
-            } else {
-                pass_help.innerHTML = "";
-                pass.classList.remove("is-invalid");
-                pass.classList.add("is-valid");
-            }
-
-            //确认密码
-            var repass = document.getElementById("repass");
-            var repass_help = document.getElementById("repass_help");
-            if (repass.value != pass.value) {
-                repass_help.innerHTML = "两次输入的密码不同";
-                repass.classList.remove("is-valid");
-                repass.classList.add("is-invalid");
-                return false;
-            } else {
-                repass_help.innerHTML = "";
-                repass.classList.remove("is-invalid");
-                repass.classList.add("is-valid");
-            }
-
-            var inputCheck = document.getElementById("inputCheck");
-            var check_help = document.getElementById("check_help");
-
-            //toLowerCase转为小写字母
-            //toUpperCase转为大写字母
-            if (inputCheck.value.toUpperCase() != yzStr) {
-                check_help.innerHTML = "输入的验证码错误";
-                inputCheck.classList.remove("is-valid");
-                inputCheck.classList.add("is-invalid");
-                return false;
-            } else {
-                check_help.innerHTML = "";
-                inputCheck.classList.remove("is-invalid");
-                inputCheck.classList.add("is-valid");
-            }
-
-            var str = '{"username":"' + name.value + '","password":"' + pass.value + '"}'
-            postAjax("http://127.0.0.1:8888/manage/regist", JSON.parse(str), printJosn);
-
-        }
-
-        function printJosn(result) {
-            alert(result.mess);
-            if (result.state) {
-                self.location = './login.html';
-            } else {
-                // alert(result.mess);
-            }
-        }
-
-        function postAjax(url, data, success) {
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: data,
-                async: true,
-                dataType: "json",
-                success: function (d) {
-                    success(d);
-                },
-                error: function (e) {
-                    console.log(e);
-                }
-            })
-        }
-
-        /**生成一个随机数**/
-        function randomNum(min, max) {
-            return Math.floor(Math.random() * (max - min) + min);
-        }
-        /**生成一个随机色**/
-        function randomColor(min, max) {
-            var r = randomNum(min, max);
-            var g = randomNum(min, max);
-            var b = randomNum(min, max);
-            return "rgb(" + r + "," + g + "," + b + ")";
-        }
-        var yzStr;
-        drawPic();
-        document.getElementById("changeImg").onclick = function (e) {
-            e.preventDefault();
-            drawPic();
-        }
-
-        /**绘制验证码图片**/
-        function drawPic() {
-
-            var canvas = document.getElementById("canvas");
-            var width = canvas.width;
-            var height = canvas.height;
-            var ctx = canvas.getContext('2d');
-            ctx.textBaseline = 'bottom';
-
-            /**绘制背景色**/
-            ctx.fillStyle = randomColor(180, 240); //颜色若太深可能导致看不清
-            ctx.fillRect(0, 0, width, height);
-            /**绘制文字**/
-            var str = 'ABCEFGHJKLMNPQRSTWXY123456789';
-
-            yzStr = '';
-            for (var i = 0; i < 4; i++) {
-                var txt = str[randomNum(0, str.length)];
-                yzStr += txt;
-                ctx.fillStyle = randomColor(50, 160); //随机生成字体颜色
-                ctx.font = randomNum(15, 40) + 'px SimHei'; //随机生成字体大小
-                var x = 10 + i * 25;
-                var y = randomNum(25, 45);
-                var deg = randomNum(-45, 45);
-                //修改坐标原点和旋转角度
-                ctx.translate(x, y);
-                ctx.rotate(deg * Math.PI / 180);
-                ctx.fillText(txt, 0, 0);
-                //恢复坐标原点和旋转角度
-                ctx.rotate(-deg * Math.PI / 180);
-                ctx.translate(-x, -y);
-            }
-            /**绘制干扰线**/
-            // for (var i = 0; i < 8; i++) {
-            //     ctx.strokeStyle = randomColor(40, 180);
-            //     ctx.beginPath();
-            //     ctx.moveTo(randomNum(0, width), randomNum(0, height));
-            //     ctx.lineTo(randomNum(0, width), randomNum(0, height));
-            //     ctx.stroke();
-            // }
-            /**绘制干扰点**/
-            for (var i = 0; i < 50; i++) {
-                ctx.fillStyle = randomColor(0, 255);
-                ctx.beginPath();
-                ctx.arc(randomNum(0, width), randomNum(0, height), 1, 0, 2 * Math.PI);
-                ctx.fill();
-            }
-        }
-
-
-
+    function Change() {
+        //刷新验证码图片必须后面添加Math.random()方法
+        document.getElementById('captchaImg').src = "{{ url_for('user.captcha') }}?" + Math.random();
+   }
 </script>
 {% endblock %}
